@@ -1,0 +1,25 @@
+{
+    "textures":
+    {
+
+    },
+    "shaders":
+    {
+        "render":
+        {
+            "vs": "js/demos/test/shaders/render.vs",
+            "fs": "js/demos/test/shaders/render.fs",
+            "attributes":
+            {
+                "position": {}
+            },
+            "uniforms":
+            {
+                  "viewProjMat":
+                  {
+                      "value": null
+                  }
+            }
+        }
+    }
+}

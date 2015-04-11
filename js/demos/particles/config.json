@@ -1,0 +1,94 @@
+{
+    "textures":
+    {
+        "location1" :
+        {
+            "type": "compute",
+            "width": 1024,
+            "height": 1024
+        },
+        "location2" :
+        {
+            "type": "compute",
+            "width": 1024,
+            "height": 1024
+        }
+    },
+    "framebuffers":
+    {
+        "compute1" :
+        {
+            "width": 1024,
+            "height": 1024,
+            "textures" :
+            [
+                "location1"
+            ]
+        },
+        "compute2" :
+        {
+            "width": 1024,
+            "height": 1024,
+            "textures" :
+            [
+                "location2"
+            ]
+        }
+    },
+    "shaders":
+    {
+        "compute":
+        {
+            "vs": "js/demos/particles/shaders/compute.vs",
+            "fs": "js/demos/particles/shaders/compute.fs",
+            "attributes":
+            {
+                "aPosition":
+                {
+                    "size": 2
+                }
+            },
+            "uniforms":
+            {
+                  "uResolution":
+                  {
+                      "value": [ 1024, 1024 ]
+                  }
+            }
+        },
+        "render":
+        {
+            "vs": "js/demos/particles/shaders/render.vs",
+            "fs": "js/demos/particles/shaders/render.fs",
+            "attributes":
+            {
+                "position":
+                {
+                    "size": 3
+                }
+            },
+            "uniforms":
+            {
+                  "viewProjMat":
+                  {
+                      "value": null
+                  }
+            }
+        }
+    },
+    "vertexBuffers":
+    {
+        "fullScreenQuad":
+        {
+            "value":
+            [
+                -1.0, -1.0,
+                 1.0,  1.0,
+                -1.0,  1.0,
+                -1.0, -1.0,
+                 1.0, -1.0,
+                 1.0,  1.0
+            ]
+        }
+    }
+}
