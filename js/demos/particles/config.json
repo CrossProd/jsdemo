@@ -1,13 +1,25 @@
 {
     "textures":
     {
-        "location1" :
+        "location1":
         {
             "type": "compute",
             "width": 1024,
             "height": 1024
         },
-        "location2" :
+        "velocity1" :
+        {
+            "type": "compute",
+            "width": 1024,
+            "height": 1024
+        },
+        "location2":
+        {
+            "type": "compute",
+            "width": 1024,
+            "height": 1024
+        },
+        "velocity2" :
         {
             "type": "compute",
             "width": 1024,
@@ -16,7 +28,7 @@
     },
     "framebuffers":
     {
-        "compute1" :
+        "location1" :
         {
             "width": 1024,
             "height": 1024,
@@ -25,7 +37,16 @@
                 "location1"
             ]
         },
-        "compute2" :
+        "velocity1" :
+        {
+            "width": 1024,
+            "height": 1024,
+            "textures" :
+            [
+                "velocity1"
+            ]
+        },
+        "location2" :
         {
             "width": 1024,
             "height": 1024,
@@ -33,14 +54,23 @@
             [
                 "location2"
             ]
+        },
+        "velocity2" :
+        {
+            "width": 1024,
+            "height": 1024,
+            "textures" :
+            [
+                "velocity2"
+            ]
         }
     },
     "shaders":
     {
-        "compute":
+        "computePosition":
         {
             "vs": "js/demos/particles/shaders/compute.vs",
-            "fs": "js/demos/particles/shaders/compute.fs",
+            "fs": "js/demos/particles/shaders/computePosition.fs",
             "attributes":
             {
                 "aPosition":
@@ -52,7 +82,46 @@
             {
                   "uResolution":
                   {
-                      "value": [ 1024, 1024 ]
+                      "value": [ 1024.0, 1024.0 ]
+                  },
+                  "uPosTexture":
+                  {
+                      "value": null
+                  },
+                  "uVelocityTexture":
+                  {
+                      "value": null
+                  }
+            }
+        },
+        "computeVelocity":
+        {
+            "vs": "js/demos/particles/shaders/compute.vs",
+            "fs": "js/demos/particles/shaders/computeVelocity.fs",
+            "attributes":
+            {
+                "aPosition":
+                {
+                    "size": 2
+                }
+            },
+            "uniforms":
+            {
+                  "uResolution":
+                  {
+                      "value": [ 1024.0, 1024.0 ]
+                  },
+                  "uTimer":
+                  {
+                      "value": null
+                  },
+                  "uPosTexture":
+                  {
+                      "value": null
+                  },
+                  "uVelocityTexture":
+                  {
+                      "value": null
                   }
             }
         },
@@ -62,14 +131,18 @@
             "fs": "js/demos/particles/shaders/render.fs",
             "attributes":
             {
-                "position":
+                "aUV":
                 {
-                    "size": 3
+                    "size": 2
                 }
             },
             "uniforms":
             {
-                  "viewProjMat":
+                  "uViewProjMat":
+                  {
+                      "value": null
+                  },
+                  "uPosTexture":
                   {
                       "value": null
                   }
@@ -89,6 +162,10 @@
                  1.0, -1.0,
                  1.0,  1.0
             ]
+        },
+        "uv":
+        {
+            "value": null
         }
     }
 }

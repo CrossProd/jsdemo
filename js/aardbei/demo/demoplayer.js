@@ -76,7 +76,17 @@ define(['CPDemo', 'CPWebGLWrapper', 'jquery', 'CPResources'], function(CPDemo, C
             this.webGL.ext = [];
 
             this.webGL.ext.floatTexture = this.webGL.getExtension('OES_texture_float');
-            this.webGL.ext.drawBuffer = this.webGL.getExtension('WEBGL_draw_buffers');
+            // this.webGL.ext.drawBuffers = this.webGL.getExtension('WEBGL_draw_buffers');
+
+            if (!this.webGL.ext.floatTexture)
+            {
+                alert("Could not load 'OES_texture_float' extension.");
+            }
+
+            // if (!this.webGL.ext.drawBuffers)
+            // {
+            //     alert("Could not load 'WEBGL_draw_buffers' extension.");
+            // }
 
             this.webGL.viewportWidth = this.canvas.width;
             this.webGL.viewportHeight = this.canvas.height;
@@ -85,8 +95,6 @@ define(['CPDemo', 'CPWebGLWrapper', 'jquery', 'CPResources'], function(CPDemo, C
             this.webGL.clearColor(0.0, 0.0, 0.0, 1);
 
             CPWebGLWrapper.addWrapperToGL(this.webGL);
-
-//            this.webGLWrapper = new CPWebGLWrapper(this.webGL);
         },
 
         loadConfig: function(finished)

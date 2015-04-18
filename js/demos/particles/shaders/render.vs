@@ -1,11 +1,14 @@
 precision highp float;
 
-uniform mat4 viewProjMat;
+uniform mat4 uViewProjMat;
+uniform sampler2D uPosTexture;
 
-attribute vec3 position;
+attribute vec2 aUV;
 
 void main()
 {
-    gl_Position = viewProjMat * vec4(position, 1);
-    gl_PointSize = 100.0 / gl_Position.z;
+    vec3 pos = texture2D(uPosTexture, aUV).xyz;
+
+    gl_Position = uViewProjMat * vec4(pos, 1);
+    gl_PointSize = 3.0;
  }

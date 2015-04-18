@@ -16,11 +16,39 @@ define(function()
             this.clear(this.COLOR_BUFFER_BIT);
         }
 
-        gl.cpSetFramebuffer = function(framebuffer)
+        gl.cpSetFramebuffer = function(frameBuffer)
         {
-            this.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+            this.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
 
-            this.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+            if (frameBuffer)
+            {
+                this.viewport(0, 0, frameBuffer.width, frameBuffer.height);
+
+                // switch (frameBuffer.textures.length)
+                // {
+                //     case 1:
+                //         this.ext.drawBuffers.drawBuffersWEBGL([this.ext.drawBuffers.COLOR_ATTACHMENT0_WEBGL]);
+                //         break;
+                //     case 2:
+                        // this.ext.drawBuffers.drawBuffersWEBGL([this.ext.drawBuffers.COLOR_ATTACHMENT0_WEBGL, this.ext.drawBuffers.COLOR_ATTACHMENT1_WEBGL]);
+                //         break;
+                //     case 3:
+                //         this.ext.drawBuffers.drawBuffersWEBGL([this.ext.drawBuffers.COLOR_ATTACHMENT0_WEBGL, this.ext.drawBuffers.COLOR_ATTACHMENT1_WEBGL, this.ext.drawBuffer.COLOR_ATTACHMENT2_WEBGL]);
+                //         break;
+                //     case 4:
+                //         this.ext.drawBuffers.drawBuffersWEBGL([this.ext.drawBuffers.COLOR_ATTACHMENT0_WEBGL, this.ext.drawBuffers.COLOR_ATTACHMENT1_WEBGL, this.ext.drawBuffer.COLOR_ATTACHMENT2_WEBGL, this.ext.drawBuffers.COLOR_ATTACHMENT3_WEBGL]);
+                //         break;
+                // }
+
+                // if (this.checkFramebufferStatus(gl.FRAMEBUFFER) !== this.FRAMEBUFFER_COMPLETE)
+                // {
+                //     console.error("Frame buffer failed");
+                // }
+            }
+            else
+            {
+                this.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+            }
         }
 
         gl.cpResetFramebuffer = function()
@@ -39,8 +67,8 @@ define(function()
             {
                 var attribute = program.attributes[key];
 
-                this.enableVertexAttribArray(attribute.location);
                 this.vertexAttribPointer(attribute.location, attribute.size, attribute.elementType, false, 0, 0);
+                this.enableVertexAttribArray(attribute.location);
             }
 
             // set uniforms
@@ -53,10 +81,10 @@ define(function()
                     switch (uniform.value.length)
                     {
                         case 1:
-                            this.uniform1f(uniform.location, false, new Float32Array(uniform.value));
+                            this.uniform1f(uniform.location, uniform.value[0]);
                             break;
                         case 2:
-                            this.uniform2f(uniform.location, false, new Float32Array(uniform.value));
+                            this.uniform2f(uniform.location, uniform.value[0], uniform.value[1]);
                             break;
                         case 3:
                             this.uniform3f(uniform.location, false, new Float32Array(uniform.value));
@@ -75,6 +103,15 @@ define(function()
             }
 
             // set textures
+        }
+
+        gl.cpSetTextureData = function(texture, data)
+        {
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+
+            gl.texImage2D(gl.TEXTURE_2D, 0, texture.internalFormat, texture.width, texture.height, 0, texture.internalFormat, texture.formatType, new Float32Array(data));
+
+            gl.bindTexture(gl.TEXTURE_2D, null);
         }
 
         gl.cpCompileVertexShader = function(script)
@@ -171,6 +208,13 @@ define(function()
             }
 
             return buffer;
+        }
+
+        gl.cpSetVertexBufferData = function(buffer, data)
+        {
+            this.bindBuffer(this.ARRAY_BUFFER, buffer);
+
+            this.bufferData(this.ARRAY_BUFFER, new Float32Array(data), this.STATIC_DRAW);
         }
     }
 

@@ -26,6 +26,9 @@ define(['CPWebGLWrapper'], function(CPWebGLWrapper)
                 {
                     finished();
                 });
+            }).fail(function(message)
+            {
+                alert('Error loading config.');
             });
         },
 
@@ -70,8 +73,10 @@ define(['CPWebGLWrapper'], function(CPWebGLWrapper)
 
                 gl.bindTexture(gl.TEXTURE_2D, texture);
 
-                var internalFormat = gl.RGBA;
-                var formatType = gl.FLOAT;
+                texture.internalFormat = gl.RGBA;
+                texture.formatType = gl.FLOAT;
+                texture.width = config.width;
+                texture.height = config.height;
 
                 switch (config.type)
                 {
@@ -82,9 +87,6 @@ define(['CPWebGLWrapper'], function(CPWebGLWrapper)
                         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
                         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-                        var internalFormat = gl.RGBA;
-                        var formatType = gl.FLOAT;
-
                         break;
                     }
                     default:
@@ -92,12 +94,9 @@ define(['CPWebGLWrapper'], function(CPWebGLWrapper)
                         break;
                 }
 
-                gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, config.width, config.height, 0, internalFormat, formatType, null);
+                gl.texImage2D(gl.TEXTURE_2D, 0, texture.internalFormat, texture.width, texture.height, 0, texture.internalFormat, texture.formatType, null);
 
                 gl.bindTexture(gl.TEXTURE_2D, null);
-
-                texture.width = config.width;
-                texture.height = config.height;
 
                 this.textures[key] = texture;
             }
@@ -113,28 +112,17 @@ define(['CPWebGLWrapper'], function(CPWebGLWrapper)
 
                 gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
 
-                var index = 0;
-                for (var textureKey in config.textures)
-                {
-                    var texture = this.textures[textureKey]
+                frameBuffer.textures = [];
 
-                    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.ext.drawBuffer.COLOR_ATTACHMENT0_WEBGL + index++, gl.TEXTURE_2D, texture, 0);
-                }
-
-                switch (index)
+                for (var i = 0; i < config.textures.length; i++)
                 {
-                    case 1:
-                        gl.ext.drawBuffer.drawBuffersWEBGL([gl.ext.drawBuffer.COLOR_ATTACHMENT0_WEBGL]);
-                        break;
-                    case 2:
-                        gl.ext.drawBuffer.drawBuffersWEBGL([gl.ext.drawBuffer.COLOR_ATTACHMENT0_WEBGL, gl.ext.drawBuffer.COLOR_ATTACHMENT1_WEBGL]);
-                        break;
-                    case 3:
-                        gl.ext.drawBuffer.drawBuffersWEBGL([gl.ext.drawBuffer.COLOR_ATTACHMENT0_WEBGL, gl.ext.drawBuffer.COLOR_ATTACHMENT1_WEBGL, gl.ext.drawBuffer.COLOR_ATTACHMENT2_WEBGL]);
-                        break;
-                    case 4:
-                        gl.ext.drawBuffer.drawBuffersWEBGL([gl.ext.drawBuffer.COLOR_ATTACHMENT0_WEBGL, gl.ext.drawBuffer.COLOR_ATTACHMENT1_WEBGL, gl.ext.drawBuffer.COLOR_ATTACHMENT2_WEBGL, gl.ext.drawBuffer.COLOR_ATTACHMENT3_WEBGL]);
-                        break;
+                    var textureKey = config.textures[i];
+
+                    var texture = this.textures[textureKey];
+
+                    frameBuffer.textures[i] = texture;
+
+                    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, texture, 0);
                 }
 
                 if (!gl.isFramebuffer(frameBuffer))
@@ -178,7 +166,7 @@ define(['CPWebGLWrapper'], function(CPWebGLWrapper)
         {
             var that = this;
 
-            this.loadVertexShader(shaderConfig.vs + this.bust, gl, function(vertexShader)
+            that.loadVertexShader(shaderConfig.vs + that.bust, gl, function(vertexShader)
             {
                 that.loadFragmentShader(shaderConfig.fs + that.bust, gl, function(fragmentShader)
                 {
@@ -226,7 +214,7 @@ define(['CPWebGLWrapper'], function(CPWebGLWrapper)
 
                 var buffer = gl.cpCreateVertexBuffer(config.value);
 
-                this.vertexBuffers['key'] = buffer;
+                this.vertexBuffers[key] = buffer;
             }
         }
     }

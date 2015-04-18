@@ -6,5 +6,7 @@ void main()
 
     dist = max(dist, 0.0);
 
-    gl_FragColor = vec4(dist, dist, dist, 1.0);
+    vec3 color = dist * vec3(1.0, 0.6, 0.3);
+
+    gl_FragColor = vec4(color, 1.0);
 }
